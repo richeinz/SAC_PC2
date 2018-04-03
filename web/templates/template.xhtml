@@ -20,12 +20,12 @@
                 <h:form id="menu">
                     <p:menu>
                         <p:submenu label="Cadastros/Manutenções">
-                            <p:menuitem value="Chamados" ajax="false"/>
-                            <p:menuitem value="Funcionários" ajax="false"/>
-                            <p:menuitem value="Linhas" ajax="false"/>
+                            <p:menuitem value="Chamados" action="#{controleChamado.listar()}" ajax="false"/>
+                            <p:menuitem value="Funcionários" action="#{controleFuncionario.listar()}" ajax="false"/>
+                            <p:menuitem value="Linhas" action="#{controleLinha.listar()}" ajax="false"/>
                             <p:menuitem value="Ônibus" action="#{controleOnibus.listar()}" ajax="false"/>
-                            <p:menuitem value="Setor" ajax="false"/>
-                            <p:menuitem value="Usuários" ajax="false"/>
+                            <p:menuitem value="Setor" action="#{controleSetor.listar()}" ajax="false"/>
+                            <p:menuitem value="Usuários" action="#{controleUsuario.listar()}" ajax="false"/>
                         </p:submenu>
                     </p:menu>
                 </h:form>             
@@ -40,7 +40,7 @@
             <ui:insert name="dialogos"></ui:insert>
             <p:layoutUnit position="south">
                 <ui:include src="/templates/ajaxstatus.xhtml"/>
-                <div align="center">by Ricardo Heinz - PC2 - tspi/ifsul - Direitos Reservados</div>
+                <div align="center">by Ricardo Heinz - PC2 - tspi/ifsul - Direitos Reservados - 2018</div>
             </p:layoutUnit>
         </p:layout>
     </f:view>

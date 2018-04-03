@@ -6,66 +6,66 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/templates/template.xhtml">
-        <ui:define name="titulo">Listagem de Onibus</ui:define>
+        <ui:define name="titulo">Listagem de Setor</ui:define>
         <ui:define name="conteudo">
             <h:form id="formListagem" prependId="false">
                 <p:growl/>
-                <p:commandButton actionListener="#{controleOnibus.novo()}"
-                                 value="Novo Ônibus" icon="ui-icon-plus"
+                <p:commandButton actionListener="#{controleSetor.novo()}"
+                                 value="Novo Setor" icon="ui-icon-plus"
                                  oncomplete="PF('dlg').show();"
                                  update=":formEdicao"/>
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
-                        <p:selectOneMenu id="ordem" value="#{controleOnibus.dao.ordem}">
+                        <p:selectOneMenu id="ordem" value="#{controleSetor.dao.ordem}">
                             <f:selectItem itemLabel="ID" itemValue="id"/>
-                            <f:selectItem itemLabel="Prefixo" itemValue="prefixo"/>
+                            <f:selectItem itemLabel="Descrição" itemValue="descricao"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="Filtro: "/>
-                        <p:inputText value="#{controleOnibus.dao.filtro}">
+                        <p:inputText value="#{controleSetor.dao.filtro}">
                             <p:ajax event="keyup" update="listagem"/>
                         </p:inputText>
                         <p:commandButton value="Filtrar" update="listagem"/>
                         <p:outputLabel value="Máximo de objetos"/>
-                        <p:inputText value="#{controleOnibus.dao.maximoObjetos}" size="5">
+                        <p:inputText value="#{controleSetor.dao.maximoObjetos}" size="5">
                             <p:ajax event="keyup" update="listagem"/>
                         </p:inputText>
-                        <p:commandButton action="#{controleOnibus.dao.primeiro()}"
+                        <p:commandButton action="#{controleSetor.dao.primeiro()}"
                                          value="Primeiro" update="listagem"/>
-                        <p:commandButton action="#{controleOnibus.dao.anterior()}"
+                        <p:commandButton action="#{controleSetor.dao.anterior()}"
                                          value="Anterior" update="listagem"/>
-                        <p:commandButton action="#{controleOnibus.dao.proximo()}"
+                        <p:commandButton action="#{controleSetor.dao.proximo()}"
                                          value="Próximo" update="listagem"/>
-                        <p:commandButton action="#{controleOnibus.dao.ultimo()}"
+                        <p:commandButton action="#{controleSetor.dao.ultimo()}"
                                          value="Ultimo" update="listagem"/>
                     </p:panelGrid>
                 </div>
-                <p:dataTable value="#{controleOnibus.dao.listaObjetos}" var="obj"
+                <p:dataTable value="#{controleSetor.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
-                        <p:outputLabel value="Listagem de Ônibus"/>
+                        <p:outputLabel value="Listagem de Setor"/>
                     </f:facet>
                     <f:facet name="footer">
-                        <p:outputLabel value="#{controleOnibus.dao.mensagemNavegacao}"/>
+                        <p:outputLabel value="#{controleSetor.dao.mensagemNavegacao}"/>
                     </f:facet>
                     <p:column headerText="ID">
                         <p:outputLabel value="#{obj.id}"/>
                     </p:column>
-                    <p:column headerText="Prefixo">
-                        <p:outputLabel value="#{obj.prefixo}"/>
-                    </p:column>      
+                    <p:column headerText="Descrição">
+                        <p:outputLabel value="#{obj.descricao}"/>
+                    </p:column>     
                     <p:column headerText="Ações">
                         <div align="center">
                             <p:commandButton
-                                actionListener="#{controleOnibus.editar(obj.id)}"
+                                actionListener="#{controleSetor.editar(obj.id)}"
                                 icon="ui-icon-pencil"
                                 update=":formEdicao"
                                 process="@form"
                                 oncomplete="PF('dlg').show();"
                                 id="btnAlterar"/>
                             <p:commandButton
-                                actionListener="#{controleOnibus.remover(obj.id)}"
+                                actionListener="#{controleSetor.remover(obj.id)}"
                                 icon="ui-icon-trash"
                                 update="@form"
                                 process="@form"
@@ -90,15 +90,15 @@
                                         <div align="center">
                                             <p:commandButton value="Salvar"
                                                              icon="ui-icon-disk"
-                                                             actionListener="#{controleOnibus.salvar()}"
+                                                             actionListener="#{controleSetor.salvar()}"
                                                              update=":formEdicao :formListagem"
                                                              oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
                                         </div>
                                     </f:facet>
                                     <p:outputLabel value="ID"/>
-                                    <p:inputText value="#{controleOnibus.objeto.id}" readonly="true" size="10"/>
-                                    <p:outputLabel value="Prefixo" for="txtPrefixo"/>
-                                    <p:inputText id="txtPrefixo" value="#{controleOnibus.objeto.prefixo}"/>
+                                    <p:inputText value="#{controleSetor.objeto.id}" readonly="true" size="10"/>
+                                    <p:outputLabel value="Descrição" for="txtDescricao"/>
+                                    <p:inputText id="txtDescricao" value="#{controleSetor.objeto.descricao}"/>
                                     <f:selectItem itemLabel="Selecione um registro"
                                                   noSelectionOption="true"/>
                                 </p:panelGrid>
