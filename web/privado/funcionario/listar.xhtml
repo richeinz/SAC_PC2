@@ -67,9 +67,6 @@
                     <p:column headerText="Endereço">
                         <p:outputLabel value="#{obj.endereco}"/>
                     </p:column>
-                    <p:column headerText="Telefone">
-                        <p:outputLabel value="#{obj.telefone}"/>
-                    </p:column>
                     <p:column headerText="Cargo">
                         <p:outputLabel value="#{obj.cargo}"/>
                     </p:column>
@@ -129,8 +126,6 @@
                                     <p:inputText id="txtEmail" value="#{controleFuncionario.objeto.email}"/>
                                     <p:outputLabel value="Endereço" for="txtEndereco"/>
                                     <p:inputText id="txtEndereco" value="#{controleFuncionario.objeto.endereco}"/>
-                                    <p:outputLabel value="Telefone" for="txtTelefone"/>
-                                    <p:inputText id="txtTelefone" value="#{controleFuncionario.objeto.telefone}"/>
                                     <p:outputLabel value="Cargo" for="txtCargo"/>
                                     <p:inputText id="txtCargo" value="#{controleFuncionario.objeto.cargo}"/>
                                     <p:outputLabel value="Nome de Usuário" for="txtNomeUsuario"/>
@@ -150,6 +145,42 @@
                                                   noSelectionOption="true"/>
                                 </p:panelGrid>
                             </div>
+                        </p:tab>
+                        <p:tab title="Telefones">
+                            <p:dataTable value="#{controleFuncionario.objeto.telefones}"
+                                         var="tel" rowIndexVar="idx" id="listaTelefones">
+                                <f:facet name="header">
+                                    <p:commandButton value="Novo Telefone"
+                                                     id="btnNovoTelefone"
+                                                     actionListener="#{controleFuncionario.novoTelefone()}"
+                                                     update=":formTelefone"
+                                                     icon="ui-icon-plus"
+                                                     process="btnNovoTelefone"
+                                                     oncomplete="PF('dlgTelefone').show();"/>
+                                </f:facet>
+                                <p:column headerText="Número">
+                                    <p:outputLabel value="#{tel.numero}"/>
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <p:outputLabel value="#{tel.descricao}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton id="btnAlterarTelefone"
+                                                         icon="ui-icon-pencil"
+                                                         actionListener="#{controleFuncionario.alterarTelefone(idx)}"
+                                                         update=":formTelefone" process="btnAlterarTelefone"
+                                                         oncomplete="PF('dlgTelefone').show();"/>
+                                        <p:commandButton id="btnRemoverTelefone"
+                                                         icon="ui-icon-trash"
+                                                         update="listaTelefones :formEdicao:growl"
+                                                         process="btnRemoverTelefone"
+                                                         onclick="if (!confirm('Confirma a exclusão?'))
+                                                             return false"
+                                                             actionListener="#{controleFuncionario.removerTelefone(idx)}"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
                         </p:tab>
                     </p:tabView>
                 </h:form>

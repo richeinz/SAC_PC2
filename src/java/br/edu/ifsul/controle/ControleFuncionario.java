@@ -3,6 +3,7 @@ package br.edu.ifsul.controle;
 import br.edu.ifsul.dao.FuncionarioDAO;
 import br.edu.ifsul.dao.SetorDAO;
 import br.edu.ifsul.modelo.Funcionario;
+import br.edu.ifsul.modelo.Telefone;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
@@ -18,8 +19,10 @@ public class ControleFuncionario implements Serializable {
 
     private FuncionarioDAO dao;
     private Funcionario objeto;
+    private Telefone telefone;
+    private Boolean novoTelefone;
     private SetorDAO daoSetor;
-    FuncionarioDAO daoPessoa;
+    private FuncionarioDAO daoPessoa;
 
     public ControleFuncionario() {
         dao = new FuncionarioDAO();
@@ -61,6 +64,28 @@ public class ControleFuncionario implements Serializable {
             Util.mensagemErro(dao.getMensagem());
         }
     }
+    
+    public void novoTelefone(){
+        telefone = new Telefone();
+        novoTelefone = true;
+    }
+    
+    public void alterarTelefone(int index){
+        telefone = objeto.getTelefones().get(index);
+        novoTelefone = false;
+    }
+    
+    public void salvarTelefone(){
+        if(novoTelefone){
+            objeto.adicionarTelefone(telefone);
+        }
+        Util.mensagemInformacao("Telefone salvo com sucesso!");
+    }
+    
+    public void removerTelefone(int index){
+        objeto.removerTelefone(index);
+        Util.mensagemInformacao("Telefone removido com sucesso!");
+    }
 
     public FuncionarioDAO getDao() {
         return dao;
@@ -84,6 +109,30 @@ public class ControleFuncionario implements Serializable {
 
     public void setDaoSetor(SetorDAO daoSetor) {
         this.daoSetor = daoSetor;
+    }
+
+    public Telefone getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(Telefone telefone) {
+        this.telefone = telefone;
+    }
+
+    public FuncionarioDAO getDaoPessoa() {
+        return daoPessoa;
+    }
+
+    public void setDaoPessoa(FuncionarioDAO daoPessoa) {
+        this.daoPessoa = daoPessoa;
+    }
+
+    public Boolean getNovoTelefone() {
+        return novoTelefone;
+    }
+
+    public void setNovoTelefone(Boolean novoTelefone) {
+        this.novoTelefone = novoTelefone;
     }
 
 }
