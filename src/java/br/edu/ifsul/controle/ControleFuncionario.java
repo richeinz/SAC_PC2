@@ -8,13 +8,14 @@ import br.edu.ifsul.util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
  * @author Ricardo
  */
 @ManagedBean(name = "controleFuncionario")
-@SessionScoped
+@ViewScoped
 public class ControleFuncionario implements Serializable {
 
     private FuncionarioDAO dao;

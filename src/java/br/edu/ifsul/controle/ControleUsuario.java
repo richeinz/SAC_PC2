@@ -2,22 +2,26 @@
 package br.edu.ifsul.controle;
 
 import br.edu.ifsul.dao.UsuarioDAO;
+import br.edu.ifsul.modelo.Telefone;
 import br.edu.ifsul.modelo.Usuario;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
  * @author Ricardo
  */
 @ManagedBean(name = "controleUsuario")
-@SessionScoped
+@ViewScoped
 public class ControleUsuario implements Serializable {
 
     private UsuarioDAO dao;
     private Usuario objeto;
+    private Telefone telefone;
+    private Boolean novoTelefone;
 
     public ControleUsuario() {
         dao = new UsuarioDAO();
@@ -58,6 +62,28 @@ public class ControleUsuario implements Serializable {
             Util.mensagemErro(dao.getMensagem());
         }
     }
+    
+    public void novoTelefone(){
+        telefone = new Telefone();
+        novoTelefone = true;
+    }
+    
+    public void alterarTelefone(int index){
+        telefone = objeto.getTelefones().get(index);
+        novoTelefone = false;
+    }
+    
+    public void salvarTelefone(){
+        if(novoTelefone){
+            objeto.adicionarTelefone(telefone);
+        }
+        Util.mensagemInformacao("Telefone salvo com sucesso!");
+    }
+    
+    public void removerTelefone(int index){
+        objeto.removerTelefone(index);
+        Util.mensagemInformacao("Telefone removido com sucesso!");
+    }
 
     public UsuarioDAO getDao() {
         return dao;
@@ -73,6 +99,22 @@ public class ControleUsuario implements Serializable {
 
     public void setObjeto(Usuario objeto) {
         this.objeto = objeto;
+    }
+
+    public Telefone getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(Telefone telefone) {
+        this.telefone = telefone;
+    }
+
+    public Boolean getNovoTelefone() {
+        return novoTelefone;
+    }
+
+    public void setNovoTelefone(Boolean novoTelefone) {
+        this.novoTelefone = novoTelefone;
     }
 
 }
