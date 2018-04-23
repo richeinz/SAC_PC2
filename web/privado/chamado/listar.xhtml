@@ -5,7 +5,10 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<!--    <ui:composition template="/templates/template.xhtml">
+    <ui:composition template="/templates/template.xhtml">
+
+        <!--LISTAGEM DE CHAMADOS-->
+
         <ui:define name="titulo">Listagem de Chamados</ui:define>
         <ui:define name="conteudo">
             <h:form id="formListagem" prependId="false">
@@ -18,7 +21,11 @@
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
                         <p:selectOneMenu id="ordem" value="#{controleChamado.dao.ordem}">
-                            <f:selectItem itemLabel="Data Recebimento" itemValue="data_recebimento"/>
+                            <f:selectItem itemLabel="ID" itemValue="id"/>
+                            <f:selectItem itemLabel="Data Recebimento" itemValue="data_hora_recebimento"/>
+                            <f:selectItem itemLabel="Data Ocorrência" itemValue="data_ocorrencia"/>
+                            <f:selectItem itemLabel="Tipo" itemValue="tipo"/>
+                            <f:selectItem itemLabel="Status" itemValue="status"/>
                             <p:ajax update="listagem"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="Filtro: "/>
@@ -48,19 +55,53 @@
                     <f:facet name="footer">
                         <p:outputLabel value="#{controleChamado.dao.mensagemNavegacao}"/>
                     </f:facet>
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{obj.id}"/>
+                    </p:column>
                     <p:column headerText="Data/Hora Recebimento">
-                        <p:outputLabel value="#{obj.data_hora_recebimento.time}"><f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/></p:outputLabel>
+                        <p:outputLabel value="#{obj.data_hora_recebimento.time}"><f:convertDateTime pattern="dd/MM/yyyy - HH:mm" timeZone="GMT-3"/></p:outputLabel>
                     </p:column>
                     <p:column headerText="Data Ocorrência">
                         <p:outputLabel value="#{obj.data_ocorrencia.time}"><f:convertDateTime pattern="dd/MM/yyyy"/></p:outputLabel>
                     </p:column>
                     <p:column headerText="Hora Ocorrência">
-                        <p:outputLabel value="#{obj.hora_ocorrencia.time}"><f:convertDateTime pattern="HH:mm"/></p:outputLabel>
+                        <p:outputLabel value="#{obj.hora_ocorrencia.time}"><f:convertDateTime pattern="HH:mm" timeZone="GMT-3"/></p:outputLabel>
                     </p:column>
+                    <p:column headerText="Local">
+                        <p:outputLabel value="#{obj.local}"/>
+                    </p:column>
+                    <p:column headerText="Sentido">
+                        <p:outputLabel value="#{obj.sentido}"/>
+                    </p:column>
+
+                    <p:column headerText="Descrição">
+                        <p:outputLabel value="#{obj.descricao}"/>
+                    </p:column>
+
+                    <p:column headerText="Linha">
+                        <p:outputLabel value="#{obj.linha.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Ônibus">
+                        <p:outputLabel value="#{obj.onibus.prefixo}"/>
+                    </p:column>
+
+                    <p:column headerText="Tipo">
+                        <p:outputLabel value="Reclamação" rendered="#{obj.status=='1'}"/>
+                        <p:outputLabel value="Elogio" rendered="#{obj.status=='2'}"/>
+                        <p:outputLabel value="Sugestão" rendered="#{obj.status=='3'}"/>
+                        <p:outputLabel value="Denúncia" rendered="#{obj.status=='4'}"/>
+                    </p:column>
+
                     <p:column headerText="Retorno">
                         <p:outputLabel value="Com Retorno" rendered="#{obj.retorno=='1'}"/>
                         <p:outputLabel value="Sem Retorno" rendered="#{obj.retorno=='2'}"/>
                     </p:column>
+
+                    <p:column headerText="Usuário">
+                        <p:outputLabel value="#{obj.usuario.nome}"/>
+                    </p:column>
+
                     <p:column headerText="Status">
                         <p:outputLabel value="Aberto" rendered="#{obj.status=='1'}"/>
                         <p:outputLabel value="Atribuído" rendered="#{obj.status=='2'}"/>
@@ -90,10 +131,13 @@
                 </p:dataTable>
             </h:form>
         </ui:define>
+
+        <!--FORMULÁRIO DE CADASTRO DE CHAMADO-->
+
         <ui:define name="dialogos">
             <p:dialog widgetVar="dlg" header="Edição" resizable="false" modal="true"
-                      width="700" height="450">
-                <h:form id="formEdicao" prependId="false">
+                      width="700" height="600">
+                <h:form id="formEdicao" prependId="false">  
                     <p:growl id="growl"/>
                     <p:tabView id="tab">
                         <p:tab title="Dados Principais">
@@ -113,32 +157,24 @@
 
 
                                     <p:outputLabel value="Data da Ocorrência" for="txtDataOcorrencia"/>
-                                        <p:calendar 
-                                            id="txtDataOcorrencia"
-                                            value="#{controleChamado.objeto.data_ocorrencia}"                               
-                                            pattern="dd/MM/yyyy"
-                                            locale="pt_BR" size="12" mask="true">
-                                            <f:converter converterId="converterCalendar"/>
-                                        </p:calendar>
+                                    <p:calendar 
+                                        id="txtDataOcorrencia"
+                                        value="#{controleChamado.objeto.data_ocorrencia}"                               
+                                        pattern="dd/MM/yyyy"
+                                        locale="pt_BR" size="12" mask="true">
+                                        <f:converter converterId="converterCalendar"/>
+                                    </p:calendar>
 
 
                                     <p:outputLabel value="Hora da Ocorrência" for="txtHoraOcorrencia"/>
-                                        <p:calendar 
-                                            id="txtHoraOcorrencia"
-                                            value="#{controleChamado.objeto.hora_ocorrencia}"                               
-                                            pattern="HH:mm"
-                                            locale="pt_BR" size="12" mask="true">
-                                            <f:converter converterId="converterCalendarHora"/>
-                                        </p:calendar>
-
-
-                                    <p:outputLabel for="retorno" value="Retorno"/>
-                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-                                        <p:selectOneRadio id="retorno" value="#{controleChamado.objeto.retorno}">
-                                            <f:selectItem itemLabel="Com retorno"  itemValue="1"/>
-                                            <f:selectItem  itemLabel="Sem retorno" itemValue="2" />
-                                        </p:selectOneRadio>
-                                    </h:panelGrid>
+                                    <p:calendar 
+                                        id="txtHoraOcorrencia"
+                                        value="#{controleChamado.objeto.hora_ocorrencia}"                               
+                                        pattern="HH:mm"
+                                        locale="pt_BR" size="12" mask="true"
+                                        timeOnly="true">
+                                        <f:converter converterId="converterCalendarHora"/>
+                                    </p:calendar>
 
                                     <p:outputLabel value="Local"/>
                                     <p:inputText value="#{controleChamado.objeto.local}"/>
@@ -148,32 +184,76 @@
 
                                     <p:outputLabel value="Descrição"/>
                                     <p:inputText value="#{controleChamado.objeto.descricao}"/>
-                                    
-                                    
+
+                                    <p:outputLabel value="Linha"/>
+                                    <p:selectOneMenu id="selectLinha"
+                                                     value="#{controleChamado.objeto.linha}">
+                                        <f:converter converterId="converterLinha"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoLinha.listaTodos}"
+                                                       var="u" itemLabel="#{u.nome}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Ônibus"/>
+                                    <p:selectOneMenu id="selectOnibus"
+                                                     value="#{controleChamado.objeto.onibus}">
+                                        <f:converter converterId="converterOnibus"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoOnibus.listaTodos}"
+                                                       var="o" itemLabel="#{o.prefixo}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="tipo" value="Tipo"/>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                        <p:selectOneRadio id="tipo" value="#{controleChamado.objeto.tipo}">
+                                            <f:selectItem itemLabel="Reclamação" itemValue="1"/>
+                                            <f:selectItem itemLabel="Elogio" itemValue="2"/>
+                                            <f:selectItem itemLabel="Sugestão" itemValue="3"/>
+                                            <f:selectItem itemLabel="Denuncia" itemValue="4"/>
+                                            <f:convertNumber/>
+                                        </p:selectOneRadio>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel for="retorno" value="Retorno"/>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                        <p:selectOneRadio id="retorno" value="#{controleChamado.objeto.retorno}">
+                                            <f:selectItem itemLabel="Com retorno"  itemValue="1"/>
+                                            <f:selectItem  itemLabel="Sem retorno"  itemValue="2"/>
+                                            <f:convertNumber/>
+                                        </p:selectOneRadio>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Usuário" for="selectUsuario"/>
+                                    <h:panelGrid columns="2" style="margin-bottom: 10px" cellpadding="5">
+                                        <p:selectOneMenu id="selectUsuario"
+                                                         value="#{controleChamado.objeto.usuario}">
+                                            <f:converter converterId="converterPessoa"/>
+                                            <f:selectItem itemLabel="Selecione um registro"
+                                                          noSelectionOption="true"/>
+                                            <f:selectItems value="#{controleChamado.daoUsuario.listaTodos}"
+                                                           var="p" itemLabel="#{p.nome}"/>
+                                        </p:selectOneMenu>
+
+                                        <p:commandButton actionListener="#{controleUsuario.novo()}"
+                                                         value="Novo Usuário" icon="ui-icon-plus"
+                                                         oncomplete="PF('dlgUsuario').show();"
+                                                         update=":formEdicaoUsuario"/>
+
+                                    </h:panelGrid>
+
 
 
                                     <p:outputLabel for="status" value="Status"/>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                         <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}">
-                                            <f:selectItem itemLabel="Aberto" itemValue="1" />
-                                            <f:selectItem itemLabel="Atribuído" itemValue="2" />
-                                            <f:selectItem itemLabel="Fechado" itemValue="3" />
+                                            <f:selectItem itemLabel="Aberto" itemValue="1"/>
+                                            <f:selectItem itemLabel="Atribuído" itemValue="2"/>
+                                            <f:selectItem itemLabel="Fechado" itemValue="3"/>
+                                            <f:convertNumber/>
                                         </p:selectOneRadio>
                                     </h:panelGrid>
-
-
-                                    <p:outputLabel for="tipo" value="Tipo"/>
-                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-                                        <p:selectOneRadio id="tipo" value="#{controleChamado.objeto.tipo}">
-                                            <f:selectItem itemLabel="Reclamação" itemValue="1" />
-                                            <f:selectItem itemLabel="Elogio" itemValue="2" />
-                                            <f:selectItem itemLabel="Sugestão" itemValue="3" />
-                                            <f:selectItem itemLabel="Denuncia" itemValue="4" />
-                                        </p:selectOneRadio>
-                                    </h:panelGrid>
-
-
-
 
                                 </p:panelGrid>
                             </div>
@@ -182,8 +262,108 @@
                 </h:form>
                 <ui:include src="/templates/ajaxstatus.xhtml"/>
             </p:dialog>
+
+            <!--Formulário cadastrar no usuário-->
+             <p:dialog widgetVar="dlgUsuario" header="Cadastro de Usuário" resizable="false" modal="true"
+                      width="700" height="450">
+                <h:form id="formEdicaoUsuario" prependId="false">
+                    <p:growl id="growlUsuario"/>
+                    <p:tabView id="tabUsuario">
+                        <p:tab title="Dados Principais Usuário">
+                            <div align="center">
+                                <p:panelGrid columns="2">
+                                    <f:facet name="footer">
+                                        <div align="center">
+                                            <p:commandButton value="Salvar"
+                                                             icon="ui-icon-disk"
+                                                             actionListener="#{controleUsuario.salvar()}"
+                                                             update=":formEdicao:tab:selectUsuario"
+                                                             oncomplete="if(!args.validationFailed){PF('dlgUsuario').hide();}"/>
+                                        </div>
+                                    </f:facet>
+                                    <p:outputLabel value="ID"/>
+                                    <p:inputText value="#{controleUsuario.objeto.id}" readonly="true" size="10"/>
+                                    <p:outputLabel value="Nome" for="txtNome"/>
+                                    <p:inputText id="txtNome" value="#{controleUsuario.objeto.nome}"/>
+                                    <p:outputLabel value="CPF" for="txtCpf"/>
+                                    <p:inputMask id="txtCpf" size="14"
+                                                 mask="999.999.999-99" 
+                                                 value="#{controleUsuario.objeto.cpf}"/>
+                                    <p:outputLabel value="Email" for="txtEmail"/>
+                                    <p:inputText id="txtEmail" value="#{controleUsuario.objeto.email}"/>
+                                    <p:outputLabel value="Endereço" for="txtEndereco"/>
+                                    <p:inputText id="txtEndereco" value="#{controleUsuario.objeto.endereco}"/>
+                                    <f:selectItem itemLabel="Selecione um registro"
+                                                  noSelectionOption="true"/>
+                                </p:panelGrid>
+                            </div>
+                        </p:tab>
+                        <p:tab title="Telefones">
+                            <p:dataTable value="#{controleUsuario.objeto.telefones}"
+                                         var="tel" rowIndexVar="idx" id="listaTelefones">
+                                <f:facet name="header">
+                                    <p:commandButton value="Novo Telefone"
+                                                     id="btnNovoTelefone"
+                                                     actionListener="#{controleUsuario.novoTelefone()}"
+                                                     update=":formTelefone"
+                                                     icon="ui-icon-plus"
+                                                     process="btnNovoTelefone"
+                                                     oncomplete="PF('dlgTelefone').show();"/>
+                                </f:facet>
+                                <p:column headerText="Número">
+                                    <p:outputLabel value="#{tel.numero}"/>
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <p:outputLabel value="#{tel.descricao}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton id="btnAlterarTelefone"
+                                                         icon="ui-icon-pencil"
+                                                         actionListener="#{controleUsuario.alterarTelefone(idx)}"
+                                                         update=":formTelefone" process="btnAlterarTelefone"
+                                                         oncomplete="PF('dlgTelefone').show();"/>
+                                        <p:commandButton id="btnRemoverTelefone"
+                                                         icon="ui-icon-trash"
+                                                         update="listaTelefones :formEdicao:growlUsuario"
+                                                         process="btnRemoverTelefone"
+                                                         onclick="if (!confirm('Confirma a exclusão?'))
+                                                                     return false"
+                                                         actionListener="#{controleUsuario.removerTelefone(idx)}"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+            </p:dialog>
+            <p:dialog header="Edição de Telefone" widgetVar="dlgTelefone" resizable="false" modal="true">
+                <h:form id="formTelefone">
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton value="Salvar" icon="ui-icon-disk"
+                                                 actionListener="#{controleUsuario.salvarTelefone()}"
+                                                 update=":formEdicaoUsuario:tabUsuario:listaTelefones formTelefone"
+                                                 process="btnSalvarTelefone txtNumeroTelefone txtDescricaoTelefone"
+                                                 id="btnSalvarTelefone"
+                                                 oncomplete="if(!args.validationFalied){PF('dlgTelefone').hide();}"/>
+                            </div>
+                        </f:facet>
+                        <p:outputLabel value="Número" for="txtNumeroTelefone"/>
+                        <p:inputMask id="txtNumeroTelefone"
+                                     value="#{controleUsuario.telefone.numero}"
+                                     mask="(99)9999-9999"/>
+                        <p:outputLabel value="Descrição" for="txtDescricaoTelefone"/>
+                        <p:inputText id="txtDescricaoTelefone"
+                                     value="#{controleUsuario.telefone.descricao}"
+                                     maxlength="30" size="30"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
         </ui:define>         
-    </ui:composition>-->
+    </ui:composition>
 </html>
 
 
