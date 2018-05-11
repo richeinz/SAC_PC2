@@ -15,7 +15,7 @@ public class MovimentoDAO<T> extends DAOGenerico<Movimento> implements Serializa
     public MovimentoDAO(){
         super();
         super.setClassePersistente(Movimento.class);       
-        super.setOrdem("nome");
+        super.setOrdem("id");
     }
    
 }

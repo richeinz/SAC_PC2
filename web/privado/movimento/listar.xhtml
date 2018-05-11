@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+
+        <!--LISTAGEM DE MOVIMENTOS-->
+
+        <ui:define name="titulo">Listagem de Movimentos</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem" prependId="false">
+                <p:growl/>
+                <p:commandButton actionListener="#{controleMovimento.novo()}"
+                                 value="Novo Movimento" icon="ui-icon-plus"
+                                 oncomplete="PF('dlg').show();"
+                                 update=":formEdicao"/>
+                <div align="center">
+                    <p:panelGrid columns="11">
+                        <p:outputLabel value="Ordem:"/>
+                        <p:selectOneMenu id="ordem" value="#{controleMovimento.dao.ordem}">
+                            <f:selectItem itemLabel="ID" itemValue="id"/>
+                            <f:selectItem itemLabel="Data de Registro" itemValue="data_hora"/>
+                            <f:selectItem itemLabel="Data Ocorrência" itemValue="data_ocorrencia"/>
+                            <f:selectItem itemLabel="Chamado" itemValue="chamado"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Filtro: "/>
+                        <p:inputText value="#{controleMovimento.dao.filtro}">
+                            <p:ajax event="keyup" update="listagem"/>
+                        </p:inputText>
+                        <p:commandButton value="Filtrar" update="listagem"/>
+                        <p:outputLabel value="Máximo de objetos"/>
+                        <p:inputText value="#{controleMovimento.dao.maximoObjetos}" size="5">
+                            <p:ajax event="keyup" update="listagem"/>
+                        </p:inputText>
+                        <p:commandButton action="#{controleMovimento.dao.primeiro()}"
+                                         value="Primeiro" update="listagem"/>
+                        <p:commandButton action="#{controleMovimento.dao.anterior()}"
+                                         value="Anterior" update="listagem"/>
+                        <p:commandButton action="#{controleMovimento.dao.proximo()}"
+                                         value="Próximo" update="listagem"/>
+                        <p:commandButton action="#{controleMovimento.dao.ultimo()}"
+                                         value="Ultimo" update="listagem"/>
+                    </p:panelGrid>
+                </div>
+                <p:dataTable value="#{controleMovimento.dao.listaObjetos}" var="obj"
+                             id="listagem">
+                    <f:facet name="header">
+                        <p:outputLabel value="Listagem de Movimentos"/>
+                    </f:facet>
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{controleMovimento.dao.mensagemNavegacao}"/>
+                    </f:facet>
+
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{obj.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Data/Hora de Registro">
+                        <p:outputLabel value="#{obj.data_hora.time}"><f:convertDateTime pattern="dd/MM/yyyy - HH:mm" timeZone="GMT-3"/></p:outputLabel>
+                    </p:column>
+
+                    <p:column headerText="Informação">
+                        <p:outputLabel value="#{obj.informacao}"/>
+                    </p:column>
+
+                    <p:column headerText="Funcionário">
+                        <p:outputLabel value="#{obj.pessoa.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Chamado">
+                        <p:outputLabel value="#{obj.chamado.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton
+                                actionListener="#{controleMovimento.editar(obj.id)}"
+                                icon="ui-icon-pencil"
+                                update=":formEdicao"
+                                process="@form"
+                                oncomplete="PF('dlg').show();"
+                                id="btnAlterar"/>
+                            <p:commandButton
+                                actionListener="#{controleMovimento.remover(obj.id)}"
+                                icon="ui-icon-trash"
+                                update="@form"
+                                process="@form"
+                                id="btnExcluir"
+                                onclick="if (!confirm('Confirma a exclusão do objeto'))
+                                            return false"/>                           
+                        </div>
+                    </p:column>                    
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+
+        <!--FORMULÁRIO DE CADASTRO DE MOVIMENTO-->
+
+        <ui:define name="dialogos">
+            <p:dialog widgetVar="dlg" header="Edição" resizable="false" modal="true"
+                      width="700" height="600">
+                <h:form id="formEdicao" prependId="false">  
+                    <p:growl id="growl"/>
+                    <p:tabView id="tab">
+                        <p:tab title="Dados Principais">
+                            <div align="center">
+                                <p:panelGrid columns="2">
+                                    <f:facet name="footer">
+                                        <div align="center">
+                                            <p:commandButton value="Salvar"
+                                                             icon="ui-icon-disk"
+                                                             actionListener="#{controleMovimento.salvar()}"
+                                                             update=":formEdicao :formListagem"
+                                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
+                                        </div>
+                                    </f:facet>
+                                    <p:outputLabel value="ID"/>
+                                    <p:inputText value="#{controleMovimento.objeto.id}" readonly="true" size="10"/>
+
+                                    <p:outputLabel value="Informação"/>
+                                    <p:inputText value="#{controleMovimento.objeto.informacao}"/>
+
+                                    <p:outputLabel value="Funcionário"/>
+                                    <p:selectOneMenu id="selectFuncionario"
+                                                     value="#{controleMovimento.objeto.pessoa}">
+                                        <f:converter converterId="converterPessoa"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleMovimento.daoPessoa.listaTodos}"
+                                                       var="p" itemLabel="#{p.nome}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Chamado"/>
+                                    <p:selectOneMenu id="selectChamado"
+                                                     value="#{controleMovimento.objeto.chamado}">
+                                        <f:converter converterId="converterChamado"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleMovimento.daoChamado.listaTodos}"
+                                                       var="c" itemLabel="#{c.id}"/>
+                                    </p:selectOneMenu>
+
+                                </p:panelGrid>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+                <ui:include src="/templates/ajaxstatus.xhtml"/>
+            </p:dialog>
+        </ui:define>         
+    </ui:composition>
+</html>
+
+
+

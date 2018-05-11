@@ -13,10 +13,18 @@
         <ui:define name="conteudo">
             <h:form id="formListagem" prependId="false">
                 <p:growl/>
+                <!--BOTÃO CADASTRAR NOVO CHAMADO-->
                 <p:commandButton actionListener="#{controleChamado.novo()}"
                                  value="Novo Chamado" icon="ui-icon-plus"
                                  oncomplete="PF('dlg').show();"
                                  update=":formEdicao"/>
+                <!--BOTÃO INCLUIR MOVIMENTO-->
+                            <p:commandButton
+                                actionListener="#{controleChamado.novo()}"
+                                value="Incluir Movimento"
+                                icon="ui-icon-plus"
+                                oncomplete="PF('dlg').show();"/>
+                <!--PAGINAÇÃO-->
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
@@ -108,24 +116,28 @@
                         <p:outputLabel value="Fechado" rendered="#{obj.status=='3'}"/>
                     </p:column>
 
-
+                    <!--AÇÕES-->
                     <p:column headerText="Ações">
                         <div align="center">
-                            <p:commandButton
+                            
+                            <!--BOTÃO EDITAR CHAMADO-->
+                            <p:commandButton 
                                 actionListener="#{controleChamado.editar(obj.id)}"
                                 icon="ui-icon-pencil"
                                 update=":formEdicao"
                                 process="@form"
                                 oncomplete="PF('dlg').show();"
                                 id="btnAlterar"/>
-                            <p:commandButton
+                            
+                            <!--BOTÃO EXCLUIR CHAMADO-->
+                            <p:commandButton 
                                 actionListener="#{controleChamado.remover(obj.id)}"
                                 icon="ui-icon-trash"
                                 update="@form"
                                 process="@form"
                                 id="btnExcluir"
                                 onclick="if (!confirm('Confirma a exclusão do objeto'))
-                                            return false"/>                           
+                                            return false"/>
                         </div>
                     </p:column>                    
                 </p:dataTable>

@@ -1,8 +1,8 @@
 package br.edu.ifsul.controle;
 
 import br.edu.ifsul.dao.ChamadoDAO;
-import br.edu.ifsul.dao.FuncionarioDAO;
 import br.edu.ifsul.dao.MovimentoDAO;
+import br.edu.ifsul.dao.PessoaDAO;
 import br.edu.ifsul.modelo.Movimento;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
@@ -20,12 +20,12 @@ public class ControleMovimento implements Serializable {
     private MovimentoDAO dao;
     private Movimento objeto;
     private ChamadoDAO daoChamado;
-    private FuncionarioDAO daoFuncionario;
+    private PessoaDAO daoPessoa;
 
     public ControleMovimento() {
         dao = new MovimentoDAO();
         daoChamado = new ChamadoDAO();
-        daoFuncionario = new FuncionarioDAO();
+        daoPessoa = new PessoaDAO();
     }
 
     public String listar() {
@@ -35,6 +35,11 @@ public class ControleMovimento implements Serializable {
     public String novo() {
         setObjeto(new Movimento());
         return "formulario";
+    }
+    
+    public String incluirNoChamado(Integer id){
+        //lógica???
+        return "formulário";
     }
 
     public void salvar() {
@@ -88,12 +93,12 @@ public class ControleMovimento implements Serializable {
         this.daoChamado = daoChamado;
     }
 
-    public FuncionarioDAO getDaoFuncionario() {
-        return daoFuncionario;
+    public PessoaDAO getDaoPessoa() {
+        return daoPessoa;
     }
 
-    public void setDaoFuncionario(FuncionarioDAO daoFuncionario) {
-        this.daoFuncionario = daoFuncionario;
+    public void setDaoPessoa(PessoaDAO daoPessoa) {
+        this.daoPessoa = daoPessoa;
     }
 
     
