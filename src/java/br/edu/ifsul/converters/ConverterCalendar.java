@@ -20,7 +20,7 @@ import javax.faces.convert.FacesConverter;
 @FacesConverter(value="converterCalendar")
 public class ConverterCalendar implements Converter, Serializable{
   
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
     
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {

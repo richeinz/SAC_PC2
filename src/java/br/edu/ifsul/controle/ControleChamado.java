@@ -3,9 +3,12 @@ package br.edu.ifsul.controle;
 import br.edu.ifsul.dao.ChamadoDAO;
 import br.edu.ifsul.dao.LinhaDAO;
 import br.edu.ifsul.dao.OnibusDAO;
+import br.edu.ifsul.dao.FuncionarioDAO;
 import br.edu.ifsul.dao.PessoaDAO;
+import br.edu.ifsul.dao.ReclamacaoDAO;
 import br.edu.ifsul.dao.UsuarioDAO;
 import br.edu.ifsul.modelo.Chamado;
+import br.edu.ifsul.modelo.Movimento;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
@@ -21,17 +24,23 @@ public class ControleChamado implements Serializable {
 
     private ChamadoDAO dao;
     private Chamado objeto;
+    private FuncionarioDAO daoFuncionario;
     private PessoaDAO daoPessoa;
     private UsuarioDAO daoUsuario;
     private LinhaDAO daoLinha;
     private OnibusDAO daoOnibus;
+    private ReclamacaoDAO daoReclamacao;
+    private Movimento movimento;
+    private Boolean novoMovimento;
 
     public ControleChamado() {
         dao = new ChamadoDAO();
+        daoFuncionario = new FuncionarioDAO();
         daoPessoa = new PessoaDAO();
         daoLinha = new LinhaDAO();
         daoOnibus = new OnibusDAO();
         daoUsuario = new UsuarioDAO();
+        daoReclamacao = new ReclamacaoDAO();
     }
 
     public String listar() {
@@ -69,6 +78,21 @@ public class ControleChamado implements Serializable {
             Util.mensagemErro(dao.getMensagem());
         }
     }
+    
+    public void novoMovimento() {
+        movimento = new Movimento();
+        novoMovimento = true;
+    }
+    
+    public void salvarMovimento(){
+        if(novoMovimento){
+            objeto.adicionarMovimento(movimento);
+        }
+        Util.mensagemInformacao("Movimento salvo com sucesso!");
+    }
+
+
+
 
     public ChamadoDAO getDao() {
         return dao;
@@ -86,12 +110,12 @@ public class ControleChamado implements Serializable {
         this.objeto = objeto;
     }
 
-    public PessoaDAO getDaoPessoa() {
-        return daoPessoa;
+    public FuncionarioDAO getDaoFuncionario() {
+        return daoFuncionario;
     }
 
-    public void setDaoPessoa(PessoaDAO daoPessoa) {
-        this.daoPessoa = daoPessoa;
+    public void setDaoFuncionario(FuncionarioDAO daoFuncionario) {
+        this.daoFuncionario = daoFuncionario;
     }
 
     public LinhaDAO getDaoLinha() {
@@ -117,5 +141,39 @@ public class ControleChamado implements Serializable {
     public void setDaoUsuario(UsuarioDAO daoUsuario) {
         this.daoUsuario = daoUsuario;
     }
+
+    public ReclamacaoDAO getDaoReclamacao() {
+        return daoReclamacao;
+    }
+
+    public void setDaoReclamacao(ReclamacaoDAO daoReclamacao) {
+        this.daoReclamacao = daoReclamacao;
+    }
+
+    public PessoaDAO getDaoPessoa() {
+        return daoPessoa;
+    }
+
+    public void setDaoPessoa(PessoaDAO daoPessoa) {
+        this.daoPessoa = daoPessoa;
+    }
+
+    public Movimento getMovimento() {
+        return movimento;
+    }
+
+    public void setMovimento(Movimento movimento) {
+        this.movimento = movimento;
+    }
+
+    public Boolean getNovoMovimento() {
+        return novoMovimento;
+    }
+
+    public void setNovoMovimento(Boolean novoMovimento) {
+        this.novoMovimento = novoMovimento;
+    }
+
+   
 
 }

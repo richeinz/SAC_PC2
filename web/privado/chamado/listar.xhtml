@@ -18,12 +18,7 @@
                                  value="Novo Chamado" icon="ui-icon-plus"
                                  oncomplete="PF('dlg').show();"
                                  update=":formEdicao"/>
-                <!--BOTÃO INCLUIR MOVIMENTO-->
-                            <p:commandButton
-                                actionListener="#{controleChamado.novo()}"
-                                value="Incluir Movimento"
-                                icon="ui-icon-plus"
-                                oncomplete="PF('dlg').show();"/>
+
                 <!--PAGINAÇÃO-->
                 <div align="center">
                     <p:panelGrid columns="11">
@@ -55,6 +50,8 @@
                                          value="Ultimo" update="listagem"/>
                     </p:panelGrid>
                 </div>
+
+                <!--LISTAGEM DOS OBJETOS OBTIDOS NO BANCO-->
                 <p:dataTable value="#{controleChamado.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
@@ -101,6 +98,10 @@
                         <p:outputLabel value="Denúncia" rendered="#{obj.status=='4'}"/>
                     </p:column>
 
+                    <p:column headerText="Tipo de Reclamação">
+                        <p:outputLabel value="#{obj.reclamacao.descricao}"/>
+                    </p:column>
+
                     <p:column headerText="Retorno">
                         <p:outputLabel value="Com Retorno" rendered="#{obj.retorno=='1'}"/>
                         <p:outputLabel value="Sem Retorno" rendered="#{obj.retorno=='2'}"/>
@@ -119,25 +120,28 @@
                     <!--AÇÕES-->
                     <p:column headerText="Ações">
                         <div align="center">
-                            
+
                             <!--BOTÃO EDITAR CHAMADO-->
                             <p:commandButton 
                                 actionListener="#{controleChamado.editar(obj.id)}"
                                 icon="ui-icon-pencil"
-                                update=":formEdicao"
+                                value="Editar"
+                                update=":formEdicao :formMovimento"
                                 process="@form"
                                 oncomplete="PF('dlg').show();"
                                 id="btnAlterar"/>
-                            
+
                             <!--BOTÃO EXCLUIR CHAMADO-->
                             <p:commandButton 
                                 actionListener="#{controleChamado.remover(obj.id)}"
                                 icon="ui-icon-trash"
+                                value="Excluir"
                                 update="@form"
                                 process="@form"
                                 id="btnExcluir"
                                 onclick="if (!confirm('Confirma a exclusão do objeto'))
                                             return false"/>
+
                         </div>
                     </p:column>                    
                 </p:dataTable>
@@ -173,7 +177,7 @@
                                         id="txtDataOcorrencia"
                                         value="#{controleChamado.objeto.data_ocorrencia}"                               
                                         pattern="dd/MM/yyyy"
-                                        locale="pt_BR" size="12" mask="true">
+                                        locale="pt_BR" size="12" mask="true" navigator="true">
                                         <f:converter converterId="converterCalendar"/>
                                     </p:calendar>
 
@@ -217,6 +221,26 @@
                                                        var="o" itemLabel="#{o.prefixo}"/>
                                     </p:selectOneMenu>
 
+                                    <p:outputLabel value="Motorista"/>
+                                    <p:selectOneMenu id="selectMotorista"
+                                                     value="#{controleChamado.objeto.motorista}">
+                                        <f:converter converterId="converterFuncionario"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoFuncionario.listaTodos}"
+                                                       var="m" itemLabel="#{m.nome}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Cobrador"/>
+                                    <p:selectOneMenu id="selectCobrador"
+                                                     value="#{controleChamado.objeto.cobrador}">
+                                        <f:converter converterId="converterFuncionario"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoFuncionario.listaTodos}"
+                                                       var="c" itemLabel="#{c.nome}"/>
+                                    </p:selectOneMenu>
+
                                     <p:outputLabel for="tipo" value="Tipo"/>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                         <p:selectOneRadio id="tipo" value="#{controleChamado.objeto.tipo}">
@@ -228,6 +252,16 @@
                                         </p:selectOneRadio>
                                     </h:panelGrid>
 
+                                    <p:outputLabel value="Tipo de Reclamação"/>
+                                    <p:selectOneMenu id="selectTipoReclamacao"
+                                                     value="#{controleChamado.objeto.reclamacao}">
+                                        <f:converter converterId="converterReclamacao"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoReclamacao.listaTodos}"
+                                                       var="r" itemLabel="#{r.descricao}"/>
+                                    </p:selectOneMenu>
+
                                     <p:outputLabel for="retorno" value="Retorno"/>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                         <p:selectOneRadio id="retorno" value="#{controleChamado.objeto.retorno}">
@@ -237,7 +271,7 @@
                                         </p:selectOneRadio>
                                     </h:panelGrid>
 
-                                    <p:outputLabel value="Usuário" for="selectUsuario"/>
+                                    <p:outputLabel value="Usuário-Cliente" for="selectUsuario"/>
                                     <h:panelGrid columns="2" style="margin-bottom: 10px" cellpadding="5">
                                         <p:selectOneMenu id="selectUsuario"
                                                          value="#{controleChamado.objeto.usuario}">
@@ -249,20 +283,18 @@
                                         </p:selectOneMenu>
 
                                         <p:commandButton actionListener="#{controleUsuario.novo()}"
-                                                         value="Novo Usuário" icon="ui-icon-plus"
+                                                         value="Novo Usuário-Cliente" icon="ui-icon-plus"
                                                          oncomplete="PF('dlgUsuario').show();"
                                                          update=":formEdicaoUsuario"/>
 
                                     </h:panelGrid>
 
-
-
                                     <p:outputLabel for="status" value="Status"/>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-                                        <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}">
-                                            <f:selectItem itemLabel="Aberto" itemValue="1"/>
-                                            <f:selectItem itemLabel="Atribuído" itemValue="2"/>
-                                            <f:selectItem itemLabel="Fechado" itemValue="3"/>
+                                        <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}" onclick="PF('dlg').show();">
+                                            <f:selectItem itemLabel="Aberto" itemValue="1" itemDisabled="#{controleChamado.objeto.id != null}"/>
+                                            <f:selectItem itemLabel="Atribuído" itemValue="2" itemDisabled="#{controleChamado.objeto.id == null}"/>
+                                            <f:selectItem itemLabel="Fechado" itemValue="3" itemDisabled="#{controleChamado.objeto.id == null}"/>
                                             <f:convertNumber/>
                                         </p:selectOneRadio>
                                     </h:panelGrid>
@@ -270,13 +302,86 @@
                                 </p:panelGrid>
                             </div>
                         </p:tab>
+                        
+                        <!--movimento-->
+                        <p:tab title="Listagem de Movimentos">
+                            <p:dataTable value="#{controleChamado.objeto.movimentos}"
+                                         var="mov" rowIndexVar="idx" id="listaMovimentos">
+                                <f:facet name="header">
+                                    <p:commandButton value="Novo Movimento"
+                                                     actionListener="#{controleChamado.novoMovimento()}"
+                                                     update=":formMovimento" icon="ui-icon-plus"
+                                                     id="btnNovoMovimento"
+                                                     process="btnNovoMovimento"
+                                                     oncomplete="PF('dlgMov').show();"
+                                                     disabled="#{controleChamado.objeto.id == null}"/>
+                                </f:facet>
+                                <p:column headerText="ID">
+                                    <p:outputLabel value="#{mov.id}"/>
+                                </p:column>
+                                <p:column headerText="Data/Hora de Registro">
+                                    <p:outputLabel value="#{mov.data_hora.time}"><f:convertDateTime pattern="dd/MM/yyyy - HH:mm" timeZone="GMT-3"/></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Informação">
+                                    <p:outputLabel value="#{mov.informacao}"/>
+                                </p:column>
+                                <p:column headerText="Funcionário">
+                                    <p:outputLabel value="#{mov.funcionario.nome}"/>
+                                </p:column>
+                                <p:column headerText="Chamado">
+                                    <p:outputLabel value="#{mov.chamado.id}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
                     </p:tabView>
                 </h:form>
+            </p:dialog>
+            
+            <!--Formulário cadastrar movimento-->
+            <p:dialog header="Edição de Movimento"
+                      widgetVar="dlgMov" resizable="false" modal="true"
+                      width="400">
+                <h:form id="formMovimento">
+                    <p:growl/>
+                    <div align="center">
+                        <p:panelGrid columns="2">
+                            <f:facet name="footer">
+                                <div align="center">
+                                    <p:commandButton id="btnAdicionarMovimento"
+                                                     value="Salvar"
+                                                     icon="ui-icon-plus"
+                                                     actionListener="#{controleChamado.salvarMovimento()}"
+                                                     update=":formEdicao:tab:listaMovimentos"
+                                                     process="@form"
+                                                     oncomplete="if(!args.validationFailed){PF('dlgMov').hide();}"/> 
+                                </div>
+                            </f:facet>
+                            <p:outputLabel value="ID"/>
+                            <p:inputText value="#{controleChamado.movimento.id}" readonly="true" size="10"/>
+
+                                    <p:outputLabel value="Informação"/>
+                                    <p:inputText  value="#{controleChamado.movimento.informacao}"/>
+
+                                    <p:outputLabel value="Funcionário"/>
+                                    <p:selectOneMenu id="selectFuncionario"
+                                                     value="#{controleChamado.movimento.funcionario}">
+                                        <f:converter converterId="converterFuncionario"/>
+                                        <f:selectItem itemLabel="Selecione um registro"
+                                                      noSelectionOption="true"/>
+                                        <f:selectItems value="#{controleChamado.daoFuncionario.listaTodos}"
+                                                       var="p" itemLabel="#{p.nome}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Chamado"/>
+                                    <p:inputText value="#{controleChamado.objeto.id}"/>                                       
+                        </p:panelGrid> 
+                    </div>
+                </h:form>         
                 <ui:include src="/templates/ajaxstatus.xhtml"/>
             </p:dialog>
 
             <!--Formulário cadastrar no usuário-->
-             <p:dialog widgetVar="dlgUsuario" header="Cadastro de Usuário" resizable="false" modal="true"
+            <p:dialog widgetVar="dlgUsuario" header="Cadastro de Usuário" resizable="false" modal="true"
                       width="700" height="450">
                 <h:form id="formEdicaoUsuario" prependId="false">
                     <p:growl id="growlUsuario"/>

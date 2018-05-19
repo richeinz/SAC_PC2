@@ -19,7 +19,7 @@
             <p:layoutUnit position="west" header="Menu">
                 <h:form id="menu">
                     <p:menu>
-                        <p:submenu label="Cadastros/Manutenções">
+                        <p:submenu label="Cadastros/Manutenções" rendered="#{controleLogin.usuarioLogado != null}">
                             <p:menuitem value="Chamados" action="#{controleChamado.listar()}" ajax="false"/>
                             <p:menuitem value="Movimentos" action="#{controleMovimento.listar()}" ajax="false"/>
                             <p:menuitem value="Funcionários" action="#{controleFuncionario.listar()}" ajax="false"/>
@@ -27,6 +27,19 @@
                             <p:menuitem value="Ônibus" action="#{controleOnibus.listar()}" ajax="false"/>
                             <p:menuitem value="Setor" action="#{controleSetor.listar()}" ajax="false"/>
                             <p:menuitem value="Usuários" action="#{controleUsuario.listar()}" ajax="false"/>
+                            <p:menuitem value="Reclamaçoes" action="#{controleReclamacao.listar()}" ajax="false"/>
+                        </p:submenu>
+                        <p:submenu label="Usuário">
+                            <p:menuitem value="#{controleLogin.usuarioLogado.nome} : Sair do Sistema"
+                                        rendered="#{controleLogin.usuarioLogado != null}"
+                                        ajax="false"
+                                        action="#{controleLogin.efetuarLogout()}"
+                                        icon="ui-icon-power"/>
+                            <p:menuitem value="Entrar no Sistema"
+                                        rendered="#{controleLogin.usuarioLogado == null}"
+                                        ajax="false"
+                                        action="#{controleLogin.paginaLogin()}"
+                                        icon="ui-icon-person"/>
                         </p:submenu>
                     </p:menu>
                 </h:form>             
