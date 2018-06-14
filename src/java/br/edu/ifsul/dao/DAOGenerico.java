@@ -13,8 +13,6 @@ import javax.persistence.EntityManager;
  */
 public class DAOGenerico<T> {
 
-
-
     private List<T> listaObjetos;
     protected EntityManager em;
     private Class classePersistente;

@@ -8,11 +8,14 @@ import br.edu.ifsul.dao.PessoaDAO;
 import br.edu.ifsul.dao.ReclamacaoDAO;
 import br.edu.ifsul.dao.UsuarioDAO;
 import br.edu.ifsul.modelo.Chamado;
+import br.edu.ifsul.modelo.Funcionario;
 import br.edu.ifsul.modelo.Movimento;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -78,21 +81,26 @@ public class ControleChamado implements Serializable {
             Util.mensagemErro(dao.getMensagem());
         }
     }
-    
+
     public void novoMovimento() {
         movimento = new Movimento();
         novoMovimento = true;
     }
-    
-    public void salvarMovimento(){
-        if(novoMovimento){
+
+    public void salvarMovimento() {
+        if (novoMovimento) {
             objeto.adicionarMovimento(movimento);
         }
         Util.mensagemInformacao("Movimento salvo com sucesso!");
     }
 
+    public FacesContext getFacesContext() {
+        return FacesContext.getCurrentInstance();
+    }
 
-
+    public HttpSession getSession() {
+        return (HttpSession) getFacesContext().getExternalContext().getSession(false);
+    }
 
     public ChamadoDAO getDao() {
         return dao;
@@ -173,7 +181,4 @@ public class ControleChamado implements Serializable {
     public void setNovoMovimento(Boolean novoMovimento) {
         this.novoMovimento = novoMovimento;
     }
-
-   
-
 }

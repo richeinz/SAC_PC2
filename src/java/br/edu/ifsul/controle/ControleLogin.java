@@ -36,7 +36,7 @@ public class ControleLogin implements Serializable{
             senha = "";
             return "/index?faces-redirect=true";
         }else{
-            Util.mensagemErro("Usuário ou senha invpalidos!");
+            Util.mensagemErro("Usuário ou senha inválidos!");
             return "/login?facews-redirect=true";
         }
     } 
@@ -51,8 +51,6 @@ public class ControleLogin implements Serializable{
         return "/login?faces-redirect=true";
     }
     
-    
-
     public void setDao(FuncionarioDAO<Funcionario> dao) {
         this.dao = dao;
     }

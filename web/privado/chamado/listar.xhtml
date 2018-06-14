@@ -107,14 +107,15 @@
                         <p:outputLabel value="Sem Retorno" rendered="#{obj.retorno=='2'}"/>
                     </p:column>
 
-                    <p:column headerText="Usuário">
+                    <p:column headerText="Cliente">
                         <p:outputLabel value="#{obj.usuario.nome}"/>
                     </p:column>
 
                     <p:column headerText="Status">
                         <p:outputLabel value="Aberto" rendered="#{obj.status=='1'}"/>
-                        <p:outputLabel value="Atribuído" rendered="#{obj.status=='2'}"/>
-                        <p:outputLabel value="Fechado" rendered="#{obj.status=='3'}"/>
+                        <p:outputLabel value="Setor" rendered="#{obj.status=='2'}"/>
+                        <p:outputLabel value="Funcionario" rendered="#{obj.status=='3'}"/>
+                        <p:outputLabel value="Encerrado" rendered="#{obj.status=='4'}"/>
                     </p:column>
 
                     <!--AÇÕES-->
@@ -168,6 +169,7 @@
                                                              oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
                                         </div>
                                     </f:facet>
+                                    
                                     <p:outputLabel value="ID"/>
                                     <p:inputText value="#{controleChamado.objeto.id}" readonly="true" size="10"/>
 
@@ -271,7 +273,7 @@
                                         </p:selectOneRadio>
                                     </h:panelGrid>
 
-                                    <p:outputLabel value="Usuário-Cliente" for="selectUsuario"/>
+                                    <p:outputLabel value="Cliente" for="selectUsuario"/>
                                     <h:panelGrid columns="2" style="margin-bottom: 10px" cellpadding="5">
                                         <p:selectOneMenu id="selectUsuario"
                                                          value="#{controleChamado.objeto.usuario}">
@@ -289,15 +291,18 @@
 
                                     </h:panelGrid>
 
-                                    <p:outputLabel for="status" value="Status"/>
-                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    
+                                    <p:outputLabel for="status" value="Status" rendered="#{controleChamado.objeto.id != null}"/>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" rendered="#{controleChamado.objeto.id != null}">
                                         <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}" onclick="PF('dlg').show();">
                                             <f:selectItem itemLabel="Aberto" itemValue="1" itemDisabled="#{controleChamado.objeto.id != null}"/>
-                                            <f:selectItem itemLabel="Atribuído" itemValue="2" itemDisabled="#{controleChamado.objeto.id == null}"/>
-                                            <f:selectItem itemLabel="Fechado" itemValue="3" itemDisabled="#{controleChamado.objeto.id == null}"/>
+                                            <f:selectItem itemLabel="Setor" itemValue="2" itemDisabled="#{controleChamado.objeto.id == null}"/>
+                                            <f:selectItem itemLabel="Funcionario" itemValue="3" itemDisabled="#{controleChamado.objeto.id == null}"/>
+                                            <f:selectItem itemLabel="Encerrado" itemValue="4" itemDisabled="#{controleChamado.objeto.id == null}"/>
                                             <f:convertNumber/>
                                         </p:selectOneRadio>
                                     </h:panelGrid>
+                                    
 
                                 </p:panelGrid>
                             </div>
@@ -363,6 +368,7 @@
                                     <p:inputText  value="#{controleChamado.movimento.informacao}"/>
 
                                     <p:outputLabel value="Funcionário"/>
+                                    
                                     <p:selectOneMenu id="selectFuncionario"
                                                      value="#{controleChamado.movimento.funcionario}">
                                         <f:converter converterId="converterFuncionario"/>
