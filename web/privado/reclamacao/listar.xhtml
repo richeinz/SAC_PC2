@@ -98,9 +98,7 @@
                                     <p:outputLabel value="ID"/>
                                     <p:inputText value="#{controleReclamacao.objeto.id}" readonly="true" size="10"/>
                                     <p:outputLabel value="Descrição" for="txtDescricao"/>
-                                    <p:inputText id="txtDescricao" value="#{controleReclamacao.objeto.descricao}"/>
-                                    <f:selectItem itemLabel="Selecione um registro"
-                                                  noSelectionOption="true"/>
+                                    <p:inputText id="txtDescricao" value="#{controleReclamacao.objeto.descricao}" maxlength="50"/>
                                 </p:panelGrid>
                             </div>
                         </p:tab>
