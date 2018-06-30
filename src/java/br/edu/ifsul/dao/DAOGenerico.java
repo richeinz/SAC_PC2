@@ -23,6 +23,7 @@ public class DAOGenerico<T> {
     private Integer posicaoAtual = 0;
     private Integer totalObjetos = 0;
     private List<T> listaTodos;
+    private String qualquerCoisa;
 
     public DAOGenerico() {
         em = EntityManagerUtil.getEntityManager();

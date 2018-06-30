@@ -6,20 +6,16 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/templates/template.xhtml">
-
         <!--LISTAGEM DE CHAMADOS-->
-
         <ui:define name="titulo">Listagem de Chamados</ui:define>
         <ui:define name="conteudo">
             <h:form id="formListagem" prependId="false">
                 <p:growl/>
-                <!--BOTÃO CADASTRAR NOVO CHAMADO-->
                 <p:commandButton actionListener="#{controleChamado.novo()}"
                                  value="Novo Chamado" icon="ui-icon-plus"
                                  oncomplete="PF('dlg').show();"
                                  update=":formEdicao"/>
 
-                <!--PAGINAÇÃO-->
                 <div align="center">
                     <p:panelGrid columns="11">
                         <p:outputLabel value="Ordem:"/>
@@ -51,7 +47,6 @@
                     </p:panelGrid>
                 </div>
 
-                <!--LISTAGEM DOS OBJETOS OBTIDOS NO BANCO-->
                 <p:dataTable value="#{controleChamado.dao.listaObjetos}" var="obj"
                              id="listagem">
                     <f:facet name="header">
@@ -118,11 +113,10 @@
                         <p:outputLabel value="Encerrado" rendered="#{obj.status=='4'}"/>
                     </p:column>
 
-                    <!--AÇÕES-->
                     <p:column headerText="Ações">
                         <div align="center">
 
-                            <!--BOTÃO EDITAR CHAMADO-->
+
                             <p:commandButton 
                                 actionListener="#{controleChamado.editar(obj.id)}"
                                 icon="ui-icon-pencil"
@@ -132,7 +126,6 @@
                                 oncomplete="PF('dlg').show();"
                                 id="btnAlterar"/>
 
-                            <!--BOTÃO EXCLUIR CHAMADO-->
                             <p:commandButton 
                                 actionListener="#{controleChamado.remover(obj.id)}"
                                 icon="ui-icon-trash"
@@ -149,11 +142,10 @@
             </h:form>
         </ui:define>
 
-        <!--FORMULÁRIO DE CADASTRO DE CHAMADO-->
 
         <ui:define name="dialogos">
             <p:dialog widgetVar="dlg" header="Edição" resizable="false" modal="true"
-                      width="700" height="600">
+                      width="700" height="700">
                 <h:form id="formEdicao" prependId="false">  
                     <p:growl id="growl"/>
                     <p:tabView id="tab">
@@ -169,7 +161,7 @@
                                                              oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
                                         </div>
                                     </f:facet>
-                                    
+
                                     <p:outputLabel value="ID"/>
                                     <p:inputText value="#{controleChamado.objeto.id}" readonly="true" size="10"/>
 
@@ -285,16 +277,16 @@
                                         </p:selectOneMenu>
 
                                         <p:commandButton actionListener="#{controleUsuario.novo()}"
-                                                         value="Novo Usuário-Cliente" icon="ui-icon-plus"
+                                                         value="Novo Cliente" icon="ui-icon-plus"
                                                          oncomplete="PF('dlgUsuario').show();"
                                                          update=":formEdicaoUsuario"/>
 
                                     </h:panelGrid>
 
-                                    
+
                                     <p:outputLabel for="status" value="Status" rendered="#{controleChamado.objeto.id != null}"/>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" rendered="#{controleChamado.objeto.id != null}">
-                                        <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}" onclick="PF('dlg').show();">
+                                        <p:selectOneRadio id="status" value="#{controleChamado.objeto.status}">
                                             <f:selectItem itemLabel="Aberto" itemValue="1" itemDisabled="#{controleChamado.objeto.id != null}"/>
                                             <f:selectItem itemLabel="Setor" itemValue="2" itemDisabled="#{controleChamado.objeto.id == null}"/>
                                             <f:selectItem itemLabel="Funcionario" itemValue="3" itemDisabled="#{controleChamado.objeto.id == null}"/>
@@ -302,13 +294,12 @@
                                             <f:convertNumber/>
                                         </p:selectOneRadio>
                                     </h:panelGrid>
-                                    
+
 
                                 </p:panelGrid>
                             </div>
                         </p:tab>
-                        
-                        <!--movimento-->
+
                         <p:tab title="Listagem de Movimentos">
                             <p:dataTable value="#{controleChamado.objeto.movimentos}"
                                          var="mov" rowIndexVar="idx" id="listaMovimentos">
@@ -341,8 +332,7 @@
                     </p:tabView>
                 </h:form>
             </p:dialog>
-            
-            <!--Formulário cadastrar movimento-->
+
             <p:dialog header="Edição de Movimento"
                       widgetVar="dlgMov" resizable="false" modal="true"
                       width="400">
@@ -364,35 +354,23 @@
                             <p:outputLabel value="ID"/>
                             <p:inputText value="#{controleChamado.movimento.id}" readonly="true" size="10"/>
 
-                                    <p:outputLabel value="Informação"/>
-                                    <p:inputText  value="#{controleChamado.movimento.informacao}"/>
+                            <p:outputLabel value="Informação"/>
+                            <p:inputText  value="#{controleChamado.movimento.informacao}"/>
 
-                                    <p:outputLabel value="Funcionário"/>
-                                    
-                                    <p:selectOneMenu id="selectFuncionario"
-                                                     value="#{controleChamado.movimento.funcionario}">
-                                        <f:converter converterId="converterFuncionario"/>
-                                        <f:selectItem itemLabel="Selecione um registro"
-                                                      noSelectionOption="true"/>
-                                        <f:selectItems value="#{controleChamado.daoFuncionario.listaTodos}"
-                                                       var="p" itemLabel="#{p.nome}"/>
-                                    </p:selectOneMenu>
-
-                                    <p:outputLabel value="Chamado"/>
-                                    <p:inputText value="#{controleChamado.objeto.id}"/>                                       
+                            <p:outputLabel value="Funcionário"/>
+                            <p:outputLabel value="#{controleChamado.movimento.funcionario.nome}"/>                                      
                         </p:panelGrid> 
                     </div>
                 </h:form>         
                 <ui:include src="/templates/ajaxstatus.xhtml"/>
             </p:dialog>
 
-            <!--Formulário cadastrar no usuário-->
-            <p:dialog widgetVar="dlgUsuario" header="Cadastro de Usuário" resizable="false" modal="true"
+            <p:dialog widgetVar="dlgUsuario" header="Cadastro de Cliente" resizable="false" modal="true"
                       width="700" height="450">
                 <h:form id="formEdicaoUsuario" prependId="false">
                     <p:growl id="growlUsuario"/>
                     <p:tabView id="tabUsuario">
-                        <p:tab title="Dados Principais Usuário">
+                        <p:tab title="Dados Principais Cliente">
                             <div align="center">
                                 <p:panelGrid columns="2">
                                     <f:facet name="footer">

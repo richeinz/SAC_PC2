@@ -12,7 +12,9 @@ import br.edu.ifsul.modelo.Funcionario;
 import br.edu.ifsul.modelo.Movimento;
 import br.edu.ifsul.util.Util;
 import java.io.Serializable;
+import java.util.Calendar;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -25,7 +27,7 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class ControleChamado implements Serializable {
 
-    private ChamadoDAO dao;
+    private ChamadoDAO<Chamado> dao;
     private Chamado objeto;
     private FuncionarioDAO daoFuncionario;
     private PessoaDAO daoPessoa;
@@ -35,9 +37,11 @@ public class ControleChamado implements Serializable {
     private ReclamacaoDAO daoReclamacao;
     private Movimento movimento;
     private Boolean novoMovimento;
+    @ManagedProperty(value = "#{controleLogin}")
+    private ControleLogin controleLogin;
 
     public ControleChamado() {
-        dao = new ChamadoDAO();
+        dao = new ChamadoDAO<>();
         daoFuncionario = new FuncionarioDAO();
         daoPessoa = new PessoaDAO();
         daoLinha = new LinhaDAO();
@@ -52,6 +56,12 @@ public class ControleChamado implements Serializable {
 
     public String novo() {
         objeto = new Chamado();
+        Movimento m = new Movimento();
+        m.setChamado(objeto);
+        m.setData_hora(Calendar.getInstance());
+        m.setFuncionario(controleLogin.getUsuarioLogado());
+        m.setInformacao("Realizado abertura de chamado");
+        objeto.getMovimentos().add(m);
         return "formulario";
     }
 
@@ -70,11 +80,12 @@ public class ControleChamado implements Serializable {
     }
 
     public void editar(Integer id) {
-        objeto = (Chamado) dao.localizar(id);
+        
+        objeto = dao.localizar(id);
     }
 
     public void remover(Integer id) {
-        objeto = (Chamado) dao.localizar(id);
+        objeto = dao.localizar(id);
         if (dao.remover(objeto)) {
             Util.mensagemInformacao(dao.getMensagem());
         } else {
@@ -84,6 +95,7 @@ public class ControleChamado implements Serializable {
 
     public void novoMovimento() {
         movimento = new Movimento();
+        movimento.setFuncionario(getControleLogin().getUsuarioLogado());
         novoMovimento = true;
     }
 
@@ -180,5 +192,13 @@ public class ControleChamado implements Serializable {
 
     public void setNovoMovimento(Boolean novoMovimento) {
         this.novoMovimento = novoMovimento;
+    }
+
+    public ControleLogin getControleLogin() {
+        return controleLogin;
+    }
+
+    public void setControleLogin(ControleLogin controleLogin) {
+        this.controleLogin = controleLogin;
     }
 }
